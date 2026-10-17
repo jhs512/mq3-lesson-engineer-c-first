@@ -1,0 +1,814 @@
+{
+  "schema_version": 1,
+  "id": "engineer-c-first",
+  "revision": "v1.0.0",
+  "title": "C의 값·배열·문자열",
+  "description": "실기 C 문제의 기초인 printf·배열·문자열 끝·switch를 따라가요. TinyCC로 실행하고, 결과가 표준으로 정해진 코드만 다뤄요. 필수 문제 8개와 선택 도전 2개예요.",
+  "sources": [
+    "https://www.q-net.or.kr/pageLink.do?link=cst/cstReport&jmCd=1320&mcrtrNo=991",
+    "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf"
+  ],
+  "sections": [],
+  "review_enabled": false,
+  "tasks": [
+    {
+      "id": "printf-format",
+      "title": "글자는 %c, 정수는 %d로 찍어요",
+      "goal": "자, C 프로그램도 자바처럼 `main`에서 시작해요. `int main(void)`의 void는 받는 값이 없다는 뜻이에요. `#include <stdio.h>`는 `printf`를 쓰려고 불러와요. `return 0;`은 잘 끝났다는 뜻이고요.\n`printf(\"형식\", 값)`은 형식 속 `%` 자리에 값을 차례로 넣어요. `%d`는 정수, `%c`는 글자 하나예요. `%.2f`는 셋째 자리에서 반올림해 소수 둘째 자리까지 보여 줘요.\n`\\n`은 줄바꿈이에요. char도 정수라서 `%d`에 넣으면 글자 번호가 나와요. 자바에서 본 대로 `'A'`는 65번이고, 그다음 글자는 다음 번호죠. 실행 전에 출력을 먼저 적어 보세요.\n\n준비 코드를 실행해 적은 두 줄과 비교하세요.\n등급이 글자로 나오게 형식 지정자 하나를 고치세요.\n평균 줄의 `%.2f`가 몇 자리까지 보여 주는지도 확인하세요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 등급 글자와 평균 점수를 준비해요.\n    char grade = 'B';\n    double avg = 87.456;\n    // 등급을 출력해요. % 뒤 글자가 출력 모양을 정해요.\n    printf(\"등급: %d\\n\", grade);\n    // %.2f는 소수 둘째 자리까지 반올림해 보여 줘요.\n    printf(\"평균: %.2f\\n\", avg);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\n\nint main(void) {\n    // 등급 글자와 평균 점수를 준비해요.\n    char grade = 'B';\n    double avg = 87.456;\n    // 등급을 출력해요. % 뒤 글자가 출력 모양을 정해요.\n    printf(\"등급: %c\\n\", grade);\n    // %.2f는 소수 둘째 자리까지 반올림해 보여 줘요.\n    printf(\"평균: %.2f\\n\", avg);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "",
+          "expected": "등급: B\n평균: 87.46"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "글자 하나를 찍는 형식 지정자는 `%c`예요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\n\nint main(void) {\n    // 등급 글자와 평균 점수를 준비해요.\n    char grade = 'B';\n    double avg = 87.456;\n    // 등급을 출력해요. % 뒤 글자가 출력 모양을 정해요.\n    printf(\"등급: %d\\n\", grade);\n    // %.2f는 소수 둘째 자리까지 반올림해 보여 줘요.\n    printf(\"평균: %.2f\\n\", avg);\n    return 0;\n}\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 등급: 66 / 평균: 87.46"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `%d`로 두면 B 대신 글자 번호가 찍혀요."
+        },
+        {
+          "action": "patch_code",
+          "before": "printf(\"등급: %d\\n\", grade);",
+          "after": "printf(\"등급: %c\\n\", grade);",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 등급: B / 평균: 87.46"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "variations": [
+        {
+          "values": {
+            "grade": "'A'",
+            "avg": "92.5"
+          },
+          "expected": "등급: A\n평균: 92.50"
+        },
+        {
+          "values": {
+            "grade": "'F'",
+            "avg": "59.999"
+          },
+          "expected": "등급: F\n평균: 60.00"
+        }
+      ]
+    },
+    {
+      "id": "digit-split",
+      "title": "십의 자리 숫자를 꺼내요",
+      "goal": "`/`는 몫, `%`는 나머지예요. int끼리 나누면 소수를 버리는 건 자바와 같아요. 따옴표 안 `%d`는 형식 자리고, 따옴표 밖 `%`는 나머지 연산이죠.\n`n % 10`은 일의 자리, `n / 10`은 일의 자리를 지운 수예요.\n`/`와 `%`가 이어지면 왼쪽부터 차례로 계산해요. 실행 전에 출력을 먼저 적어 보세요.\n\n준비 코드를 실행해 적은 답과 비교하세요.\n둘째 줄이 십의 자리 숫자 하나만 찍게 고치세요.\n`n / 10` 뒤에 연산 하나를 더 붙이면 돼요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 자리 숫자를 꺼낼 양의 정수예요.\n    int n = 1234;\n    // 10으로 나눈 나머지는 일의 자리예요.\n    printf(\"일의 자리: %d\\n\", n % 10);\n    // 십의 자리를 꺼내려는 줄이에요.\n    printf(\"십의 자리: %d\\n\", n / 10);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\n\nint main(void) {\n    // 자리 숫자를 꺼낼 양의 정수예요.\n    int n = 1234;\n    // 10으로 나눈 나머지는 일의 자리예요.\n    printf(\"일의 자리: %d\\n\", n % 10);\n    // 십의 자리를 꺼내려는 줄이에요.\n    printf(\"십의 자리: %d\\n\", n / 10 % 10);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "",
+          "expected": "일의 자리: 4\n십의 자리: 3"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "`n / 10 % 10`은 왼쪽부터 계산해요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\n\nint main(void) {\n    // 자리 숫자를 꺼낼 양의 정수예요.\n    int n = 1234;\n    // 10으로 나눈 나머지는 일의 자리예요.\n    printf(\"일의 자리: %d\\n\", n % 10);\n    // 십의 자리를 꺼내려는 줄이에요.\n    printf(\"십의 자리: %d\\n\", n / 10);\n    return 0;\n}\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 일의 자리: 4 / 십의 자리: 123"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `n % 10 / 10`처럼 순서를 바꾸면 늘 0이 나와요."
+        },
+        {
+          "action": "patch_code",
+          "before": "n / 10);",
+          "after": "n / 10 % 10);",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 일의 자리: 4 / 십의 자리: 3"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "variations": [
+        {
+          "values": {
+            "n": "5678"
+          },
+          "expected": "일의 자리: 8\n십의 자리: 7"
+        },
+        {
+          "values": {
+            "n": "90"
+          },
+          "expected": "일의 자리: 0\n십의 자리: 9"
+        },
+        {
+          "values": {
+            "n": "7"
+          },
+          "expected": "일의 자리: 7\n십의 자리: 0"
+        }
+      ]
+    },
+    {
+      "id": "array-sum",
+      "title": "배열은 0번 칸부터 세요",
+      "goal": "배열(array)은 같은 자료형 값을 줄지어 담아요. C에서는 `int scores[5] = {...};`처럼 이름 뒤에 칸 수를 써요.\n칸 번호(인덱스)는 0부터예요. 5칸이면 `scores[0]`부터 `scores[4]`까지죠.\n반복으로 한 칸씩 더해 합계를 구해요. 실행 전에 출력을 먼저 적어 보세요.\n\n준비 코드의 합계에서 어느 칸이 빠졌는지 찾아보세요.\n다섯 칸을 모두 더하게 for의 시작 값을 고치세요.\n다시 실행해서 손으로 더한 합계와 비교하세요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 다섯 과목 점수를 5칸 배열에 담아요.\n    int scores[5] = {80, 95, 70, 60, 85};\n    // 합계는 0에서 시작해요.\n    int sum = 0;\n    // 칸 번호 i로 한 칸씩 꺼내 더해요.\n    for (int i = 1; i < 5; i++) {\n        sum += scores[i];\n    }\n    printf(\"합계: %d\\n\", sum);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\n\nint main(void) {\n    // 다섯 과목 점수를 5칸 배열에 담아요.\n    int scores[5] = {80, 95, 70, 60, 85};\n    // 합계는 0에서 시작해요.\n    int sum = 0;\n    // 칸 번호 i로 한 칸씩 꺼내 더해요.\n    for (int i = 0; i < 5; i++) {\n        sum += scores[i];\n    }\n    printf(\"합계: %d\\n\", sum);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "",
+          "expected": "합계: 390"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "첫 칸은 `scores[0]`이에요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\n\nint main(void) {\n    // 다섯 과목 점수를 5칸 배열에 담아요.\n    int scores[5] = {80, 95, 70, 60, 85};\n    // 합계는 0에서 시작해요.\n    int sum = 0;\n    // 칸 번호 i로 한 칸씩 꺼내 더해요.\n    for (int i = 1; i < 5; i++) {\n        sum += scores[i];\n    }\n    printf(\"합계: %d\\n\", sum);\n    return 0;\n}\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 합계: 310"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `i <= 5`로 고치면 없는 칸 `scores[5]`를 읽어 결과를 믿을 수 없어요."
+        },
+        {
+          "action": "patch_code",
+          "before": "int i = 1; i < 5",
+          "after": "int i = 0; i < 5",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 합계: 390"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "variations": [
+        {
+          "values": {
+            "scores": "{10, 20, 30, 40, 50}"
+          },
+          "expected": "합계: 150"
+        },
+        {
+          "values": {
+            "scores": "{100, 0, 0, 0, 1}"
+          },
+          "expected": "합계: 101"
+        }
+      ]
+    },
+    {
+      "id": "array-count",
+      "title": "칸 수는 sizeof로 세요",
+      "goal": "`int prices[] = {...};`처럼 `[]`를 비우면 값 개수만큼 칸이 생겨요.\n`sizeof(값)`은 그 값이 차지하는 바이트(byte) 수예요. 바이트는 메모리 크기를 세는 단위죠. `sizeof(prices)`는 배열 전체, `sizeof(prices[0])`는 한 칸의 바이트 수예요.\n전체를 한 칸으로 나누면 칸 수예요. 실행 전에 출력을 먼저 적어 보세요.\n\n준비 코드의 count는 손으로 적어 둔 값이에요. 배열의 실제 칸 수와 비교해 보세요.\ncount에 손으로 적은 값 대신 sizeof로 센 칸 수를 담으세요.\n바이트 수는 환경마다 달라도 나눈 칸 수는 같아요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // [] 안을 비우면 값 개수만큼 칸이 생겨요.\n    int prices[] = {1200, 3500, 800, 2000};\n    // 배열의 칸 수를 담는 변수예요.\n    int count = 3;\n    int sum = 0;\n    // count 칸만큼 차례로 더해요.\n    for (int i = 0; i < count; i++) {\n        sum += prices[i];\n    }\n    printf(\"%d개, 합계 %d원\\n\", count, sum);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\n\nint main(void) {\n    // [] 안을 비우면 값 개수만큼 칸이 생겨요.\n    int prices[] = {1200, 3500, 800, 2000};\n    // 배열의 칸 수를 담는 변수예요.\n    int count = sizeof(prices) / sizeof(prices[0]);\n    int sum = 0;\n    // count 칸만큼 차례로 더해요.\n    for (int i = 0; i < count; i++) {\n        sum += prices[i];\n    }\n    printf(\"%d개, 합계 %d원\\n\", count, sum);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "",
+          "expected": "4개, 합계 7500원"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "`sizeof(prices) / sizeof(prices[0])`를 count에 담아요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\n\nint main(void) {\n    // [] 안을 비우면 값 개수만큼 칸이 생겨요.\n    int prices[] = {1200, 3500, 800, 2000};\n    // 배열의 칸 수를 담는 변수예요.\n    int count = 3;\n    int sum = 0;\n    // count 칸만큼 차례로 더해요.\n    for (int i = 0; i < count; i++) {\n        sum += prices[i];\n    }\n    printf(\"%d개, 합계 %d원\\n\", count, sum);\n    return 0;\n}\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 3개, 합계 5500원"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `sizeof(prices)`만 쓰면 칸 수가 아니라 바이트 수예요."
+        },
+        {
+          "action": "patch_code",
+          "before": "int count = 3;",
+          "after": "int count = sizeof(prices) / sizeof(prices[0]);",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 4개, 합계 7500원"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "variations": [
+        {
+          "values": {
+            "prices": "{100, 200, 300, 400, 500, 600}"
+          },
+          "expected": "6개, 합계 2100원"
+        },
+        {
+          "values": {
+            "prices": "{10, 20, 30, 40, 50}"
+          },
+          "expected": "5개, 합계 150원"
+        }
+      ]
+    },
+    {
+      "id": "string-end",
+      "title": "칸 수와 글자 수는 달라요",
+      "goal": "C에는 String이 없어요. 문자열은 char 배열에 담아요. 글자 뒤에는 끝 표시인 널 문자 `'\\0'`이 한 칸 붙어요.\n`strlen(word)`는 `'\\0'` 앞까지 글자 수예요. `#include <string.h>`가 필요해요.\nchar 한 칸은 1바이트라 `sizeof(word)`는 배열의 칸 수예요. 실행 전에 출력을 먼저 적어 보세요.\n\n준비 코드를 실행해 적은 답과 비교하세요.\nlen이 실제 글자 수가 되게 그 줄만 고치세요.\n칸 수는 그대로인지도 확인하세요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    // 10칸 배열에 세 글자를 담아요. 남은 칸은 '\\0'으로 채워져요.\n    char word[10] = \"cat\";\n    // 배열이 가진 칸 수예요.\n    int cells = sizeof(word);\n    // 글자 수를 구하려는 줄이에요.\n    int len = sizeof(word);\n    printf(\"칸: %d, 글자: %d\\n\", cells, len);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    // 10칸 배열에 세 글자를 담아요. 남은 칸은 '\\0'으로 채워져요.\n    char word[10] = \"cat\";\n    // 배열이 가진 칸 수예요.\n    int cells = sizeof(word);\n    // 글자 수를 구하려는 줄이에요.\n    int len = strlen(word);\n    printf(\"칸: %d, 글자: %d\\n\", cells, len);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "",
+          "expected": "칸: 10, 글자: 3"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "`strlen(word)`를 len에 담아요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    // 10칸 배열에 세 글자를 담아요. 남은 칸은 '\\0'으로 채워져요.\n    char word[10] = \"cat\";\n    // 배열이 가진 칸 수예요.\n    int cells = sizeof(word);\n    // 글자 수를 구하려는 줄이에요.\n    int len = sizeof(word);\n    printf(\"칸: %d, 글자: %d\\n\", cells, len);\n    return 0;\n}\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 칸: 10, 글자: 10"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `sizeof(word) - 1`은 배열이 글자 수보다 딱 한 칸 클 때만 맞아요."
+        },
+        {
+          "action": "patch_code",
+          "before": "int len = sizeof(word);",
+          "after": "int len = strlen(word);",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 칸: 10, 글자: 3"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "variations": [
+        {
+          "values": {
+            "word": "\"tiger\""
+          },
+          "expected": "칸: 10, 글자: 5"
+        },
+        {
+          "values": {
+            "word": "\"a\""
+          },
+          "expected": "칸: 10, 글자: 1"
+        },
+        {
+          "values": {
+            "word": "\"\""
+          },
+          "expected": "칸: 10, 글자: 0"
+        }
+      ]
+    },
+    {
+      "id": "count-char",
+      "title": "'\\0'까지 한 글자씩 세요",
+      "goal": "문자열은 `'\\0'`에서 끝나요. 그래서 반복 조건을 `s[i] != '\\0'`으로 써요.\n글자 하나(char)끼리는 `==`로 비교해요.\n`printf`의 `%s`는 문자열을 `'\\0'` 앞까지 찍어요. 실행 전에 출력을 먼저 적어 보세요.\n\n준비 코드의 i가 칸 번호 몇까지 가는지 보세요. 마지막 글자까지 닿나요?\n글자 수와 상관없이 `'\\0'` 앞까지 보게 for 조건을 고치세요.\n단어가 바뀌어도 맞게 세는지 생각해 보세요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 20칸 배열에 단어를 담아요. 남은 칸은 '\\0'이에요.\n    char s[20] = \"banana\";\n    // 몇 개인지 셀 글자예요.\n    char target = 'a';\n    int count = 0;\n    // 칸 번호 i로 한 글자씩 봐요.\n    for (int i = 0; i < 5; i++) {\n        // 찾는 글자와 같으면 하나 세요.\n        if (s[i] == target) {\n            count++;\n        }\n    }\n    printf(\"%s에서 %c: %d개\\n\", s, target, count);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\n\nint main(void) {\n    // 20칸 배열에 단어를 담아요. 남은 칸은 '\\0'이에요.\n    char s[20] = \"banana\";\n    // 몇 개인지 셀 글자예요.\n    char target = 'a';\n    int count = 0;\n    // 칸 번호 i로 한 글자씩 봐요.\n    for (int i = 0; s[i] != '\\0'; i++) {\n        // 찾는 글자와 같으면 하나 세요.\n        if (s[i] == target) {\n            count++;\n        }\n    }\n    printf(\"%s에서 %c: %d개\\n\", s, target, count);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "",
+          "expected": "banana에서 a: 3개"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "조건 자리에 `s[i] != '\\0'`을 써요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\n\nint main(void) {\n    // 20칸 배열에 단어를 담아요. 남은 칸은 '\\0'이에요.\n    char s[20] = \"banana\";\n    // 몇 개인지 셀 글자예요.\n    char target = 'a';\n    int count = 0;\n    // 칸 번호 i로 한 글자씩 봐요.\n    for (int i = 0; i < 5; i++) {\n        // 찾는 글자와 같으면 하나 세요.\n        if (s[i] == target) {\n            count++;\n        }\n    }\n    printf(\"%s에서 %c: %d개\\n\", s, target, count);\n    return 0;\n}\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. banana에서 a: 2개"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `i < 6`처럼 지금 단어 길이를 적으면 다른 단어에서 틀려요."
+        },
+        {
+          "action": "patch_code",
+          "before": "i < 5;",
+          "after": "s[i] != '\\0';",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. banana에서 a: 3개"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "variations": [
+        {
+          "values": {
+            "s": "\"abracadabra\""
+          },
+          "expected": "abracadabra에서 a: 5개"
+        },
+        {
+          "values": {
+            "s": "\"cocoa\"",
+            "target": "'o'"
+          },
+          "expected": "cocoa에서 o: 2개"
+        },
+        {
+          "values": {
+            "s": "\"xyz\""
+          },
+          "expected": "xyz에서 a: 0개"
+        },
+        {
+          "values": {
+            "s": "\"ab\\0aa\""
+          },
+          "expected": "ab에서 a: 1개"
+        },
+        {
+          "values": {
+            "s": "\"2020 data\""
+          },
+          "expected": "2020 data에서 a: 2개"
+        }
+      ]
+    },
+    {
+      "id": "switch-break",
+      "title": "break가 없으면 아래로 이어져요",
+      "goal": "`switch (값)`은 값이 같은 `case`로 바로 가서 그 아래를 실행해요. 맞는 case가 없으면 `default`로 가요.\n`break;`를 만나야 switch를 빠져나가요. 없으면 아래 case의 줄도 이어서 실행해요.\n이걸 이어 실행(fall-through)이라고 해요. 실행 전에 출력을 먼저 적어 보세요.\n\n준비 코드를 실행해 적은 답과 비교하세요.\n등급마다 쿠폰 하나만 찍히게 고치세요.\nbreak 한 줄만 넣으면 돼요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 회원 등급 번호예요.\n    int level = 2;\n    // level과 같은 case로 바로 가요.\n    switch (level) {\n        case 1:\n            printf(\"브론즈 쿠폰\\n\");\n            // break를 만나면 switch를 빠져나가요.\n            break;\n        case 2:\n            printf(\"실버 쿠폰\\n\");\n        case 3:\n            // 골드 등급의 쿠폰이에요.\n            printf(\"골드 쿠폰\\n\");\n            break;\n        default:\n            // 맞는 case가 없을 때 와요.\n            printf(\"쿠폰 없음\\n\");\n    }\n    // switch가 끝난 뒤에 늘 찍혀요.\n    printf(\"끝\\n\");\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\n\nint main(void) {\n    // 회원 등급 번호예요.\n    int level = 2;\n    // level과 같은 case로 바로 가요.\n    switch (level) {\n        case 1:\n            printf(\"브론즈 쿠폰\\n\");\n            // break를 만나면 switch를 빠져나가요.\n            break;\n        case 2:\n            printf(\"실버 쿠폰\\n\");\n            break;\n        case 3:\n            // 골드 등급의 쿠폰이에요.\n            printf(\"골드 쿠폰\\n\");\n            break;\n        default:\n            // 맞는 case가 없을 때 와요.\n            printf(\"쿠폰 없음\\n\");\n    }\n    // switch가 끝난 뒤에 늘 찍혀요.\n    printf(\"끝\\n\");\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "",
+          "expected": "실버 쿠폰\n끝"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "`printf(\"실버 쿠폰\\n\");` 바로 아래에 `break;`를 넣어요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\n\nint main(void) {\n    // 회원 등급 번호예요.\n    int level = 2;\n    // level과 같은 case로 바로 가요.\n    switch (level) {\n        case 1:\n            printf(\"브론즈 쿠폰\\n\");\n            // break를 만나면 switch를 빠져나가요.\n            break;\n        case 2:\n            printf(\"실버 쿠폰\\n\");\n        case 3:\n            // 골드 등급의 쿠폰이에요.\n            printf(\"골드 쿠폰\\n\");\n            break;\n        default:\n            // 맞는 case가 없을 때 와요.\n            printf(\"쿠폰 없음\\n\");\n    }\n    // switch가 끝난 뒤에 늘 찍혀요.\n    printf(\"끝\\n\");\n    return 0;\n}\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 실버 쿠폰 / 골드 쿠폰 / 끝"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. break를 빼먹으면 아래 case의 출력까지 함께 나와요."
+        },
+        {
+          "action": "patch_code",
+          "before": "            printf(\"실버 쿠폰\\n\");\n",
+          "after": "            printf(\"실버 쿠폰\\n\");\n            break;\n",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. 실버 쿠폰 / 끝"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "variations": [
+        {
+          "values": {
+            "level": "1"
+          },
+          "expected": "브론즈 쿠폰\n끝"
+        },
+        {
+          "values": {
+            "level": "3"
+          },
+          "expected": "골드 쿠폰\n끝"
+        },
+        {
+          "values": {
+            "level": "7"
+          },
+          "expected": "쿠폰 없음\n끝"
+        }
+      ]
+    },
+    {
+      "id": "loop-increment",
+      "title": "조건 속 ++는 언제 늘까요?",
+      "goal": "`i++ < n`은 지금 i로 먼저 비교하고, 그다음 i를 1 늘려요.\n`++i < n`은 i를 먼저 늘리고 비교해요. 자바와 같은 규칙이에요.\n조건이 거짓일 때도 i는 늘어요. 실행 전에 출력을 먼저 적어 보세요.\n\n먼저 준비 코드(`++i < n`)의 출력을 적고, 실행해 비교하세요.\n반복이 n번 돌게 조건 속 ++의 자리만 바꾸세요.\n아래 표는 바꾼 뒤 `i++ < n`의 흐름이에요. ?를 채워 바꾼 뒤 출력을 먼저 적어요.\ncount 칸은 그 줄을 마친 뒤 값이에요. 거짓인 줄은 몸통을 건너뛰니 count가 그대로죠.\n\n| 비교할 때 i | `i++ < n` | 비교 뒤 i | count |\n|---|---|---|---|\n| 0 | 참 | 1 | 1 |\n| 1 | 참 | 2 | 2 |\n| 2 | ? | ? | ? |\n| 3 | ? | ? | ? |\n| 4 | ? | ? | ? |",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 반복할 횟수예요.\n    int n = 4;\n    // i는 비교에 쓰는 번호, count는 실제로 돈 횟수예요.\n    int i = 0;\n    int count = 0;\n    // 조건을 검사할 때마다 i를 1씩 늘려요.\n    while (++i < n) {\n        count++;\n    }\n    // 반복이 끝난 뒤의 i와 count를 출력해요.\n    printf(\"i=%d, count=%d\\n\", i, count);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\n\nint main(void) {\n    // 반복할 횟수예요.\n    int n = 4;\n    // i는 비교에 쓰는 번호, count는 실제로 돈 횟수예요.\n    int i = 0;\n    int count = 0;\n    // 조건을 검사할 때마다 i를 1씩 늘려요.\n    while (i++ < n) {\n        count++;\n    }\n    // 반복이 끝난 뒤의 i와 count를 출력해요.\n    printf(\"i=%d, count=%d\\n\", i, count);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "",
+          "expected": "i=5, count=4"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": true,
+      "hints": [
+        "`while (i++ < n)`처럼 ++를 i 뒤로 옮겨요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\n\nint main(void) {\n    // 반복할 횟수예요.\n    int n = 4;\n    // i는 비교에 쓰는 번호, count는 실제로 돈 횟수예요.\n    int i = 0;\n    int count = 0;\n    // 조건을 검사할 때마다 i를 1씩 늘려요.\n    while (++i < n) {\n        count++;\n    }\n    // 반복이 끝난 뒤의 i와 count를 출력해요.\n    printf(\"i=%d, count=%d\\n\", i, count);\n    return 0;\n}\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. i=4, count=3"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `i++ <= n`으로 쓰면 n번보다 한 번 더 돌아요."
+        },
+        {
+          "action": "patch_code",
+          "before": "++i < n",
+          "after": "i++ < n",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. i=5, count=4"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "variations": [
+        {
+          "values": {
+            "n": "1"
+          },
+          "expected": "i=2, count=1"
+        },
+        {
+          "values": {
+            "n": "0"
+          },
+          "expected": "i=1, count=0"
+        },
+        {
+          "values": {
+            "n": "10"
+          },
+          "expected": "i=11, count=10"
+        }
+      ]
+    },
+    {
+      "id": "reverse-array",
+      "title": "도전 · 배열을 거꾸로 뒤집어요",
+      "goal": "두 칸을 맞바꿀 때는 임시 변수 temp에 한쪽을 먼저 담아요.\n`i`번 칸의 짝은 `n - 1 - i`번 칸이에요. n은 앞에서 배운 sizeof로 세요.\n실행 전에 i마다 배열 상태를 표로 적어 보세요.\n\n| i | 맞바꾸는 칸 | 바꾼 뒤 배열 |\n|---|---|---|\n| 시작 | - | 1 2 3 4 5 |\n| 0 | 0번과 4번 | 5 2 3 4 1 |\n| 1 | ? | ? |\n| 2 | ? | ? |\n| 3 | ? | ? |\n| 4 | ? | ? |\n\n표를 끝까지 채우고 준비 코드의 출력과 비교하세요.\n배열이 거꾸로 뒤집혀 출력되게 한 곳만 고치세요.\n칸 수가 짝수여도 맞는지 생각해 보세요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 뒤집을 배열이에요.\n    int arr[] = {1, 2, 3, 4, 5};\n    // 칸 수를 sizeof로 세요.\n    int n = sizeof(arr) / sizeof(arr[0]);\n    // i번 칸과 짝 칸을 맞바꿔요.\n    for (int i = 0; i < n; i++) {\n        // 한쪽 값을 temp에 먼저 담아 둬요.\n        int temp = arr[i];\n        arr[i] = arr[n - 1 - i];\n        arr[n - 1 - i] = temp;\n    }\n    // 칸을 앞에서부터 대괄호에 넣어 출력해요.\n    for (int k = 0; k < n; k++) {\n        printf(\"[%d]\", arr[k]);\n    }\n    // 마지막에 줄을 바꿔요.\n    printf(\"\\n\");\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\n\nint main(void) {\n    // 뒤집을 배열이에요.\n    int arr[] = {1, 2, 3, 4, 5};\n    // 칸 수를 sizeof로 세요.\n    int n = sizeof(arr) / sizeof(arr[0]);\n    // i번 칸과 짝 칸을 맞바꿔요.\n    for (int i = 0; i < n / 2; i++) {\n        // 한쪽 값을 temp에 먼저 담아 둬요.\n        int temp = arr[i];\n        arr[i] = arr[n - 1 - i];\n        arr[n - 1 - i] = temp;\n    }\n    // 칸을 앞에서부터 대괄호에 넣어 출력해요.\n    for (int k = 0; k < n; k++) {\n        printf(\"[%d]\", arr[k]);\n    }\n    // 마지막에 줄을 바꿔요.\n    printf(\"\\n\");\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "",
+          "expected": "[5][4][3][2][1]"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": false,
+      "hints": [
+        "표에서 i가 절반을 넘은 뒤 무슨 일이 생기는지 보세요.",
+        "반복은 절반까지만 돌아요. 4칸이면 i가 0과 1일 때만 바꿔요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\n\nint main(void) {\n    // 뒤집을 배열이에요.\n    int arr[] = {1, 2, 3, 4, 5};\n    // 칸 수를 sizeof로 세요.\n    int n = sizeof(arr) / sizeof(arr[0]);\n    // i번 칸과 짝 칸을 맞바꿔요.\n    for (int i = 0; i < n; i++) {\n        // 한쪽 값을 temp에 먼저 담아 둬요.\n        int temp = arr[i];\n        arr[i] = arr[n - 1 - i];\n        arr[n - 1 - i] = temp;\n    }\n    // 칸을 앞에서부터 대괄호에 넣어 출력해요.\n    for (int k = 0; k < n; k++) {\n        printf(\"[%d]\", arr[k]);\n    }\n    // 마지막에 줄을 바꿔요.\n    printf(\"\\n\");\n    return 0;\n}\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. [1][2][3][4][5]"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. 끝까지 바꾸면 절반을 지난 뒤 다시 제자리로 돌아와요."
+        },
+        {
+          "action": "patch_code",
+          "before": "i < n;",
+          "after": "i < n / 2;",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. [5][4][3][2][1]"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "variations": [
+        {
+          "values": {
+            "arr": "{10, 20, 30, 40}"
+          },
+          "expected": "[40][30][20][10]"
+        },
+        {
+          "values": {
+            "arr": "{7, 3}"
+          },
+          "expected": "[3][7]"
+        },
+        {
+          "values": {
+            "arr": "{9, 8, 7, 6, 5, 4, 3}"
+          },
+          "expected": "[3][4][5][6][7][8][9]"
+        }
+      ]
+    },
+    {
+      "id": "swap-case",
+      "title": "도전 · 대문자와 소문자를 맞바꿔요",
+      "goal": "`'A'`는 65번, `'a'`는 97번이에요. 이 글자 번호표를 아스키(ASCII) 코드라고 해요. 같은 알파벳은 소문자가 대문자보다 32 커요.\nchar도 정수라서 `>=`로 범위를 비교하고 32를 더하거나 빼요.\n자바에서 배운 `&&`는 둘 다 참일 때만, `||`는 하나만 참이어도 참이에요. 앞에서 배운 `'\\0'` 반복도 함께 써요. 고친 뒤의 출력을 실행 전에 먼저 적어 보세요.\n\n대문자는 소문자로, 소문자는 대문자로 바꾸는 코드예요.\n준비 코드를 실행해 알파벳이 아닌 칸이 어떻게 됐는지 보세요.\n틀린 곳 하나를 찾아 고치세요.",
+      "language": "c",
+      "entry_file": "main.c",
+      "starter_code": "#include <stdio.h>\n\nint main(void) {\n    // 바꿀 문장을 20칸 배열에 담아요.\n    char s[20] = \"Hello C World\";\n    // '\\0'을 만날 때까지 한 글자씩 봐요.\n    for (int i = 0; s[i] != '\\0'; i++) {\n        if (s[i] >= 'a' && s[i] <= 'z') {\n            // 소문자는 32를 빼서 대문자로 바꿔요.\n            s[i] = s[i] - 32;\n        } else if (s[i] >= 'A' || s[i] <= 'Z') {\n            // 대문자는 32를 더해서 소문자로 바꿔요.\n            s[i] = s[i] + 32;\n        }\n    }\n    // %s는 '\\0' 앞까지 출력해요.\n    printf(\"%s\\n\", s);\n    return 0;\n}\n",
+      "solution": "#include <stdio.h>\n\nint main(void) {\n    // 바꿀 문장을 20칸 배열에 담아요.\n    char s[20] = \"Hello C World\";\n    // '\\0'을 만날 때까지 한 글자씩 봐요.\n    for (int i = 0; s[i] != '\\0'; i++) {\n        if (s[i] >= 'a' && s[i] <= 'z') {\n            // 소문자는 32를 빼서 대문자로 바꿔요.\n            s[i] = s[i] - 32;\n        } else if (s[i] >= 'A' && s[i] <= 'Z') {\n            // 대문자는 32를 더해서 소문자로 바꿔요.\n            s[i] = s[i] + 32;\n        }\n    }\n    // %s는 '\\0' 앞까지 출력해요.\n    printf(\"%s\\n\", s);\n    return 0;\n}\n",
+      "files": {},
+      "tests": [
+        {
+          "input": "",
+          "expected": "hELLO c wORLD"
+        }
+      ],
+      "web_checks": [],
+      "git_checks": null,
+      "required": false,
+      "hints": [
+        "공백이 왜 다른 글자로 바뀌었는지 조건을 따져 보세요.",
+        "대문자 범위는 두 조건이 모두 참이어야 해요."
+      ],
+      "narration": [
+        {
+          "action": "set_code",
+          "code": "#include <stdio.h>\n\nint main(void) {\n    // 바꿀 문장을 20칸 배열에 담아요.\n    char s[20] = \"Hello C World\";\n    // '\\0'을 만날 때까지 한 글자씩 봐요.\n    for (int i = 0; s[i] != '\\0'; i++) {\n        if (s[i] >= 'a' && s[i] <= 'z') {\n            // 소문자는 32를 빼서 대문자로 바꿔요.\n            s[i] = s[i] - 32;\n        } else if (s[i] >= 'A' || s[i] <= 'Z') {\n            // 대문자는 32를 더해서 소문자로 바꿔요.\n            s[i] = s[i] + 32;\n        }\n    }\n    // %s는 '\\0' 앞까지 출력해요.\n    printf(\"%s\\n\", s);\n    return 0;\n}\n",
+          "say": "준비 코드를 먼저 실행해 볼게요."
+        },
+        {
+          "action": "run",
+          "expected_failure": false
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. hELLO@c@wORLD"
+        },
+        {
+          "action": "say",
+          "target": "editor",
+          "text": "조심하세요. `||`로 두면 공백과 숫자에도 32가 더해져 다른 글자가 돼요."
+        },
+        {
+          "action": "patch_code",
+          "before": "} else if (s[i] >= 'A' || s[i] <= 'Z') {",
+          "after": "} else if (s[i] >= 'A' && s[i] <= 'Z') {",
+          "say": "작은 부분을 바꿔 원리를 확인해요."
+        },
+        {
+          "action": "run"
+        },
+        {
+          "action": "say",
+          "target": "output",
+          "text": "실행 결과를 비교해요. hELLO c wORLD"
+        },
+        {
+          "action": "submit"
+        }
+      ],
+      "variations": [
+        {
+          "values": {
+            "s": "\"Zebra 2 Apples\""
+          },
+          "expected": "zEBRA 2 aPPLES"
+        },
+        {
+          "values": {
+            "s": "\"abc XYZ!\""
+          },
+          "expected": "ABC xyz!"
+        },
+        {
+          "values": {
+            "s": "\"[Tip] Use C\""
+          },
+          "expected": "[tIP] uSE c"
+        }
+      ]
+    }
+  ]
+}
